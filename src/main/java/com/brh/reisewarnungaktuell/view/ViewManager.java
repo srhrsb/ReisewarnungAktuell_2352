@@ -32,6 +32,40 @@ public class ViewManager {
      */
     public void showView(ViewType type) {
 
+        String viewName = type.getPath();
+
+        try{
+
+          currentLoader  = new FXMLLoader(App.class.getResource(viewName));
+          Parent view = currentLoader.load();
+
+          if(view == null){
+              throw new NullPointerException("View ist ungültig, konnte nicht geladen werden");
+          }
+
+          //View ist gültig, es geht weiter...
+          Scene scene = new Scene(view, WINDOW_WIDTH, WINDOW_HEIGHT );
+          App.getStage().setScene(scene);
+
+        }catch( IOException e ){
+            LOGGER.log( Level.SEVERE, "Fehler beim Laden der View " + viewName
+                    + "Error: "+e.getMessage() );
+            throw new RuntimeException("View konnte nicht geladen werden "
+             + viewName +": "+e.getMessage(), e);
+        }
+        catch( NullPointerException e){
+            LOGGER.log(Level.SEVERE, "Resource nicht gefunden " + viewName, e);
+            throw new RuntimeException("FXML-Resource nicht vorhanden : Error:"+ e.getMessage());
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
+
+
     }
 
     /**
