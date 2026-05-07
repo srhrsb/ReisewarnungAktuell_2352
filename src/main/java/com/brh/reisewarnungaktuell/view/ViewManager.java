@@ -47,6 +47,8 @@ public class ViewManager {
           Scene scene = new Scene(view, WINDOW_WIDTH, WINDOW_HEIGHT );
           App.getStage().setScene(scene);
 
+          LOGGER.info("View wurde erfolgreich geladen: "+ type);
+
         }catch( IOException e ){
             LOGGER.log( Level.SEVERE, "Fehler beim Laden der View " + viewName
                     + "Error: "+e.getMessage() );

@@ -42,8 +42,9 @@ public class MainController {
      */
     public static synchronized MainController getInstance() {
 
-        throw new UnsupportedOperationException("Noch nicht implementiert");
+          if(instance == null) instance = new MainController();
 
+          return instance;
     }
 
     /**
@@ -52,6 +53,9 @@ public class MainController {
      * Zeigt die Suchansicht als Startansicht an.
      */
     public void init() {
+
+        view = new ViewManager();
+        view.showView(ViewType.SITE);
 
     }
 
