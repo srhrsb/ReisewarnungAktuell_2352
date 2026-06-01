@@ -55,8 +55,14 @@ public class MainController {
     public void init() {
 
         view = new ViewManager();
-        view.showView(ViewType.SITE);
+        view.showView(ViewType.SEARCH);
 
+        if(isOnline()){
+            dao = new OnlineDAO();
+        }
+        else{
+            dao = new OfflineDAO();
+        }
     }
 
     /**

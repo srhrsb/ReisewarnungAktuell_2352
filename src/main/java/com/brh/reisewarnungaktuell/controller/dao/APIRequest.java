@@ -45,22 +45,26 @@ public class APIRequest {
                     .GET()
                     .build();
 
-            LOGGER.fine("Sende HTTP-GET-Anfrage an: " + url);
+            LOGGER.info("Sende HTTP-GET-Anfrage an: " + url);
 
             CompletableFuture<HttpResponse<String>> future = HTTP_CLIENT.sendAsync(
                     request, HttpResponse.BodyHandlers.ofString());
 
-            future.thenAccept(response -> handleResponse(response, callback))
-                  .exceptionally(throwable -> {
-                      LOGGER.log(Level.SEVERE, "HTTP-Anfrage fehlgeschlagen: " + throwable.getMessage(), throwable);
-                      return null;
-                  });
+            future.thenAccept(response ->  handleResponse(response, callback))
+                .exceptionally(throwable -> {
+                    LOGGER.log(Level.SEVERE, "HTTP-Anfrage fehlgeschlagen: " + throwable.getMessage(), throwable);
+                     return null;
+                 });
+
         } catch (IllegalArgumentException e) {
             LOGGER.log(Level.SEVERE, "Ungültige URL: " + url, e);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Unerwarteter Fehler beim Senden der Anfrage", e);
         }
     }
+
+
+
 
     /**
      * Verarbeitet die HTTP-Antwort und ruft den Callback mit dem Ergebnis auf.
@@ -71,7 +75,7 @@ public class APIRequest {
     private void handleResponse(HttpResponse<String> response, Action<String> callback) {
         if (response.statusCode() == 200) {
             String body = response.body();
-            LOGGER.fine("HTTP-Anfrage erfolgreich");
+            LOGGER.info("HTTP-Anfrage erfolgreich");
             callback.invoke(body);
         } else {
             LOGGER.warning("HTTP-Anfrage fehlgeschlagen, Status: " + response.statusCode());
