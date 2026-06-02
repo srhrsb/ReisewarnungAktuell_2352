@@ -49,7 +49,7 @@ public class OnlineDAO implements TravelWarningDAO {
     @Override
     public void requestWarningPreviews( Action< ArrayList<TravelWarningPreview> > callback ){
         APIRequest request = new APIRequest();
-        request.sendRequest(API_BASE_URL, jsonOptional -> handleWarningPreviewResponse(jsonOptional, callback));
+        request.sendRequest(API_BASE_URL, json -> handleWarningPreviewResponse(json, callback));
     }
 
     /**
@@ -73,6 +73,61 @@ public class OnlineDAO implements TravelWarningDAO {
      * @param callback Wird mit den geparsten Vorschauen aufgerufen
      */
     private void handleWarningPreviewResponse( String json, Action< ArrayList<TravelWarningPreview> > callback ) {
+
+        if(json == null || json.isBlank()){
+            LOGGER.log(Level.WARNING, "API antwortet mit leerer oder ungültiger Reisewarungsvorschau");
+            return;
+        }
+
+        try{
+            JsonNode root = OBJECT_MAPPER.readTree( json );
+            JsonNode response = root.get("response");
+
+            if( response == null ){
+                LOGGER.log(Level.WARNING, "Ungültiges Feld response");
+                return;
+            }
+
+            JsonNode contentList = response.get("contentList");
+            if(contentList == null || !contentList.isArray()){
+                LOGGER.log(Level.WARNING, "contentList ist null oder kein Array");
+                return;
+            }
+
+
+            for( JsonNode idNode : contentList ){
+                String id = idNode.asText();
+                JsonNode preview = response.get(id);
+
+                if(preview == null){
+                    LOGGER.log(Level.INFO,
+                            "Preview für id: "+id+" nicht gefunden, wird übersprungen");
+                    continue;
+                }
+
+//                String title =
+//                String countryName =
+
+
+            }
+
+
+
+        }
+        catch( JsonProcessingException e ){
+            LOGGER.log( Level.SEVERE, "Fehler beim Parsen der Reisewarnungsvorschau: " + e.getMessage());
+        }
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
