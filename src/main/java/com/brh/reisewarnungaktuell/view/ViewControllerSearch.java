@@ -31,7 +31,7 @@ public class ViewControllerSearch {
      */
     @FXML
     private void initialize(){
-
+         MainController.getInstance().searchViewIsReady(this::createWarningOverview);
     }
 
     /**
@@ -43,6 +43,37 @@ public class ViewControllerSearch {
      *                        Wenn leer, wird nichts angezeigt.
      */
     public void createWarningOverview( ArrayList<TravelWarningPreview> warnings) {
+        System.out.println(warnings);
+
+        if(warnings == null){
+            LOGGER.log(Level.WARNING, "Leere Vorschauliste");
+            return;
+        }
+
+        VBox vbox = new VBox();
+        vbox.setSpacing( 5 );
+        vbox.setStyle( "-fx-padding: 10;");
+
+        for( var preview : warnings){
+
+            Button previewBtn = new Button(preview.title() +
+                    " | " + preview.countryName() );
+
+            vbox.getChildren().add(previewBtn);
+
+        }
+
+        Platform.runLater( ()->
+                {
+                      LOGGER.info("Vorschau Reisewarnung aktualisiert");
+                      scrollPane.setContent( vbox );
+                }
+        );
+
+
+
+
+
 
     }
 

@@ -94,7 +94,7 @@ public class OnlineDAO implements TravelWarningDAO {
                 return;
             }
 
-
+            ArrayList<TravelWarningPreview> previews = new ArrayList<>();
             for( JsonNode idNode : contentList ){
                 String id = idNode.asText();
                 JsonNode preview = response.get(id);
@@ -105,14 +105,19 @@ public class OnlineDAO implements TravelWarningDAO {
                     continue;
                 }
 
-//                String title =
-//                String countryName =
+                //ToDo: Titel, Ländername holen und ein Record v. Typ
+                //ToDo: TravelWarning Preview erzeugen
+                String title = preview.get("title").asText();
+                String countryName = preview.get("countryName").asText();
 
 
+                TravelWarningPreview warning =
+                            new TravelWarningPreview(id, title, countryName);
+                previews.add(warning);
             }
 
-
-
+            LOGGER.log(Level.INFO, "Reisewarnungs-Vorschau geladen");
+            callback.invoke(previews);
         }
         catch( JsonProcessingException e ){
             LOGGER.log( Level.SEVERE, "Fehler beim Parsen der Reisewarnungsvorschau: " + e.getMessage());

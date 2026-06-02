@@ -75,7 +75,7 @@ public class APIRequest {
     private void handleResponse(HttpResponse<String> response, Action<String> callback) {
         if (response.statusCode() == 200) {
             String body = response.body();
-            LOGGER.info("HTTP-Anfrage erfolgreich");
+            LOGGER.info("HTTP-Anfrage erfolgreich: " + body);
             callback.invoke(body);
         } else {
             LOGGER.warning("HTTP-Anfrage fehlgeschlagen, Status: " + response.statusCode());

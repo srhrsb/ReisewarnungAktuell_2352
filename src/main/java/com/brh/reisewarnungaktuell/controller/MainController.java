@@ -55,7 +55,6 @@ public class MainController {
     public void init() {
 
         view = new ViewManager();
-        view.showView(ViewType.SEARCH);
 
         if(isOnline()){
             dao = new OnlineDAO();
@@ -63,6 +62,8 @@ public class MainController {
         else{
             dao = new OfflineDAO();
         }
+
+        view.showView(ViewType.SEARCH);
     }
 
     /**
@@ -72,6 +73,13 @@ public class MainController {
      * @param callback Callback-Funktion, die mit den Warnungsvorschauen aufgerufen wird
      */
     public void searchViewIsReady( Action< ArrayList<TravelWarningPreview> > callback) {
+
+        if(callback == null){
+            LOGGER.log(Level.WARNING, "Callback vom SearchView ist null");
+            return;
+        }
+
+        dao.requestWarningPreviews( callback );
 
     }
 
