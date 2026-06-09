@@ -31,7 +31,8 @@ public class ViewControllerSearch {
      */
     @FXML
     private void initialize(){
-         MainController.getInstance().searchViewIsReady(this::createWarningOverview);
+         MainController.getInstance().
+                 searchViewIsReady(this::createWarningOverview);
     }
 
     /**
@@ -55,12 +56,8 @@ public class ViewControllerSearch {
         vbox.setStyle( "-fx-padding: 10;");
 
         for( var preview : warnings){
-
-            Button previewBtn = new Button(preview.title() +
-                    " | " + preview.countryName() );
-
+            var previewBtn = createWarningButton(preview);
             vbox.getChildren().add(previewBtn);
-
         }
 
         Platform.runLater( ()->
@@ -84,7 +81,16 @@ public class ViewControllerSearch {
      * @return Konfigurierter Button mit Click-Handler
      */
     private Button createWarningButton( TravelWarningPreview preview) {
-        throw new UnsupportedOperationException("Noch nicht implementiert");
+        Button btn = new Button(preview.title() +
+                " | " + preview.countryName() );
 
+        btn.setPrefWidth(680);
+        btn.setTooltip( new Tooltip("Klicken um Details der Reisewarnung zu sehen"));
+        btn.setOnAction(event->{
+            MainController.getInstance().requestWarningSite(preview.id());
+         });
+
+
+        return btn;
     }
 }

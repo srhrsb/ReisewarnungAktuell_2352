@@ -79,7 +79,7 @@ public class OnlineDAO implements TravelWarningDAO {
             return;
         }
 
-        try{
+        try{ //Daten sind verwendbar
             JsonNode root = OBJECT_MAPPER.readTree( json );
             JsonNode response = root.get("response");
 
