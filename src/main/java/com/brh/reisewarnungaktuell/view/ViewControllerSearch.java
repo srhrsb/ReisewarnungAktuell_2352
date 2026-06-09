@@ -81,11 +81,13 @@ public class ViewControllerSearch {
      * @return Konfigurierter Button mit Click-Handler
      */
     private Button createWarningButton( TravelWarningPreview preview) {
-        Button btn = new Button( preview.title() +
+        Button btn = new Button( "🌍 "+preview.title() +
                 " | " + preview.countryName() );
 
         btn.setPrefWidth(680);
+        btn.setAlignment((Pos.CENTER_LEFT));
         btn.setTooltip( new Tooltip("Klicken um Details der Reisewarnung zu sehen"));
+
         btn.setOnAction(event->{
             MainController.getInstance().requestWarningSite(preview.id());
          });

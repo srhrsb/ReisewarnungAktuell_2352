@@ -91,6 +91,15 @@ public class MainController {
      * @throws IllegalArgumentException wenn travelWarningId null oder nur Whitespace enthält
      */
     public void requestWarningSite( String travelWarningId ) {
+         view.showView(ViewType.SITE);
+         Optional<Object> controllerOptional = view.getCurrentViewController();
+
+         if(controllerOptional.isEmpty()){
+             LOGGER.log(Level.SEVERE, "Site Controller konnte nicht geladen werden.");
+             return;
+         }
+         ViewControllerSite controller = (ViewControllerSite) controllerOptional.get();
+         dao.requestWarningById( travelWarningId, controller::showSiteContent );
 
     }
 
