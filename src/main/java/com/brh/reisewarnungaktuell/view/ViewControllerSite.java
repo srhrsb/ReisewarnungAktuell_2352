@@ -33,7 +33,8 @@ public class ViewControllerSite {
      */
     @FXML
     public void initialize(){
-
+        engine = webView.getEngine();
+        LOGGER.log(Level.INFO,"ViewControllerSite initialisiert");
     }
 
     /**
@@ -44,7 +45,24 @@ public class ViewControllerSite {
      *
      */
     public void showSiteContent(TravelWarning warning) {
+        if ( warning == null ) {
+            LOGGER.warning("Versuch, leere Reisewarnung anzuzeigen");
+            showErrorContent("Keine Reisewarnung verfügbar");
+            return;
+        }
 
+        Platform.runLater(() -> {
+            try {
+                titleLabel.setText(warning.title() + " - " + warning.countryName());
+                engine.loadContent(warning.content(), "text/html");
+
+                LOGGER.info("Reisewarnung für '" + warning.countryName() + "' wird angezeigt");
+
+            } catch (Exception e) {
+                LOGGER.log(Level.SEVERE, "Fehler beim Anzeigen der Reisewarnung: " + e.getMessage(), e);
+                showErrorContent("Fehler beim Laden der Reisewarnung");
+            }
+        });
     }
 
     /**

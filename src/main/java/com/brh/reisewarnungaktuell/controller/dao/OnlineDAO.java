@@ -62,8 +62,8 @@ public class OnlineDAO implements TravelWarningDAO {
     public void requestWarningById(String id, Action<TravelWarning>  callback){
         APIRequest request = new APIRequest();
         String url = API_BASE_URL + "/" + id;
-
-
+        request.sendRequest(url,
+                jsonOptional -> handleWarningResponse(jsonOptional, callback));
     }
 
     /**
@@ -110,7 +110,6 @@ public class OnlineDAO implements TravelWarningDAO {
                 String title = preview.get("title").asText();
                 String countryName = preview.get("countryName").asText();
 
-
                 TravelWarningPreview warning =
                             new TravelWarningPreview(id, title, countryName);
                 previews.add(warning);
@@ -122,18 +121,6 @@ public class OnlineDAO implements TravelWarningDAO {
         catch( JsonProcessingException e ){
             LOGGER.log( Level.SEVERE, "Fehler beim Parsen der Reisewarnungsvorschau: " + e.getMessage());
         }
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     /**
@@ -143,13 +130,56 @@ public class OnlineDAO implements TravelWarningDAO {
      * @param callback Wird mit der geparsten Reisewarnung aufgerufen
      */
     private void handleWarningResponse(String json, Action<TravelWarning> callback) {
+        if ( json == null || json.isBlank() ) {
+            LOGGER.log(Level.WARNING, "API antwortete mit leerer Reisewarnung");
+            return;
+        }
 
+        try {
+            JsonNode rootNode = OBJECT_MAPPER.readTree(json);
+            JsonNode responseNode = rootNode.get("response");
+
+            if (responseNode == null) {
+                LOGGER.log(Level.WARNING,"API Antwort hat kein 'response' Feld");
+                return;
+            }
+
+            JsonNode contentList = responseNode.get("contentList");
+
+            if (contentList == null || !contentList.isArray() || contentList.isEmpty() ){
+                LOGGER.log(Level.WARNING,"'contentList' ist null, kein Array oder leer");
+                return;
+            }
+
+            String id = contentList.get(0).asText();
+            if ( id.isEmpty() ) {
+                LOGGER.log(Level.WARNING, "ID aus contentList ist leer");
+                return;
+            }
+
+            JsonNode warningNode = responseNode.get(id);
+            if ( warningNode == null ){
+                LOGGER.log(Level.WARNING, "Reisewarnung Node für ID '" + id + "' nicht gefunden");
+                return;
+            }
+
+            String countryName = warningNode.get("countryName").asText();
+            String title = warningNode.get("title").asText();
+            String content = warningNode.get("content").asText();
+
+            TravelWarning warning = new TravelWarning( id, countryName, title, content);
+            LOGGER.log(Level.INFO, "Reisewarnung für '" + countryName + "' erfolgreich geladen");
+            callback.invoke( warning );
+
+        } catch (JsonProcessingException e) {
+            LOGGER.log(Level.SEVERE, "Fehler beim Parsen der Reisewarnung: " + e.getMessage(), e);
+        }
     }
 
     /**
      * Speichert eine Reisewarnung im In-Memory- und Datei-Cache.
      * 
-     * @param warning Optional mit der zu speichernden Reisewarnung
+     * @param warning zu speichernde Reisewarnung
      */
     private void cacheWarnings( TravelWarning warning ){
 

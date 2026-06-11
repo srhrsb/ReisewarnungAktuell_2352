@@ -62,12 +62,6 @@ public class ViewManager {
         catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
-
-
-
-
-
-
     }
 
     /**
@@ -77,7 +71,10 @@ public class ViewManager {
      * oder leer wenn keine View geladen ist
      */
     public Optional<Object> getCurrentViewController() {
-       throw new UnsupportedOperationException("Noch nicht implementiert");
-
+        if (currentLoader == null) {
+            LOGGER.warning("Versuch, Controller zu bekommen ohne geladene View");
+            return Optional.empty();
+        }
+        return Optional.ofNullable(currentLoader.getController());
     }
 }
