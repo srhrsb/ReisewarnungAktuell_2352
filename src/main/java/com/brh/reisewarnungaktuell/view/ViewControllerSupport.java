@@ -21,7 +21,7 @@ public class ViewControllerSupport {
 
     @FXML
     private void onClickBackToSearch(){
-
+        MainController.getInstance().requestViewChange(ViewType.SEARCH);
     }
 
 }

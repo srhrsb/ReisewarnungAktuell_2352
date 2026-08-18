@@ -97,6 +97,6 @@ public class ViewControllerSearch {
 
     @FXML
     private void onClickSupport(){
-       MainController.getInstance().
+       MainController.getInstance().requestViewChange(ViewType.SUPPORT);
     }
 }
