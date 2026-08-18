@@ -94,4 +94,9 @@ public class ViewControllerSearch {
 
         return btn;
     }
+
+    @FXML
+    private void onClickSupport(){
+       MainController.getInstance().
+    }
 }
